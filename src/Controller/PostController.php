@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @Route("/post")
@@ -28,13 +29,15 @@ class PostController extends AbstractController
     /**
      * @Route("/new", name="post_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Security $security): Response
     {
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $security->getUser();
+            $post->setAuthor($user);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($post);
             $entityManager->flush();

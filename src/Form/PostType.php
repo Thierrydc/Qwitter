@@ -16,7 +16,6 @@ class PostType extends AbstractType
             ->add('media')
             ->add('createdAt')
             ->add('updatedAt')
-            ->add('author')
             ->add('likes')
         ;
     }
