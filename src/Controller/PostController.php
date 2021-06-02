@@ -16,6 +16,13 @@ use Symfony\Component\Security\Core\Security;
  */
 class PostController extends AbstractController
 {
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     /**
      * @Route("/", name="post_index", methods={"GET"})
      */
@@ -29,14 +36,14 @@ class PostController extends AbstractController
     /**
      * @Route("/new", name="post_new", methods={"GET","POST"})
      */
-    public function new(Request $request, Security $security): Response
+    public function new(Request $request): Response
     {
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $security->getUser();
+            $user = $this->security->getUser();
             $post->setAuthor($user);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($post);
