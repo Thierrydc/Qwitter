@@ -6,6 +6,7 @@ use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class PostType extends AbstractType
 {
@@ -13,7 +14,13 @@ class PostType extends AbstractType
     {
         $builder
             ->add('content')
-            ->add('media')
+            ->add('mediaFile', VichFileType::class, [
+                'required' => false,
+                'allow_delete' => true,
+                'delete_label' => 'remove Photo',
+                'download_uri' => true,
+                'download_label' => 'Download Photo',
+            ])
             ->add('likes')
         ;
     }
