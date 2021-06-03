@@ -26,7 +26,9 @@
                 <td>{{ post.updatedAt ? post.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('post_show', {'id': post.id}) }}">show</a>
-                    <a href="{{ path('post_edit', {'id': post.id}) }}">edit</a>
+                    {% if app.user is same as( post.author) %}
+                        <a href="{{ path('post_edit', {'id': post.id}) }}">edit</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}

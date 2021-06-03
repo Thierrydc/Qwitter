@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +35,7 @@ class PostController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_USER", statusCode=401 ,message="You have to be logged-in to access this ressource")
      * @Route("/new", name="post_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
@@ -69,6 +71,7 @@ class PostController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_USER", statusCode=401 ,message="You have to be logged-in to access this ressource")
      * @Route("/{id}/edit", name="post_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Post $post): Response
@@ -89,6 +92,7 @@ class PostController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_USER", statusCode=401 ,message="You have to be logged-in to access this ressource")
      * @Route("/{id}", name="post_delete", methods={"POST"})
      */
     public function delete(Request $request, Post $post): Response
