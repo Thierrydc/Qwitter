@@ -20,6 +20,7 @@ class PostType extends AbstractType
                 'delete_label' => 'remove Photo',
                 'download_uri' => true,
                 'download_label' => 'Download Photo',
+                'asset_helper' => true,
             ])
             ->add('likes')
         ;
