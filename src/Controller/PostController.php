@@ -76,18 +76,26 @@ class PostController extends AbstractController
      */
     public function edit(Request $request, Post $post): Response
     {
-        $form = $this->createForm(PostType::class, $post);
-        $form->handleRequest($request);
+        $user = $this->security->getUser();
+        if ($user === $post->getAuthor()) {
+            $form = $this->createForm(PostType::class, $post);
+            $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('post_index');
+                return $this->redirectToRoute('post_index');
+            }
+
+            return $this->render('post/edit.html.twig', [
+                'post' => $post,
+                'form' => $form->createView(),
+            ]);
         }
 
-        return $this->render('post/edit.html.twig', [
-            'post' => $post,
-            'form' => $form->createView(),
+        return $this->render('common/error.html.twig', [
+            'error' => '401',
+            'message' => 'You have to be logged-in to access this ressource',
         ]);
     }
 
@@ -97,12 +105,18 @@ class PostController extends AbstractController
      */
     public function delete(Request $request, Post $post): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($post);
-            $entityManager->flush();
+        $user = $this->security->getUser();
+        if ($user === $post->getAuthor()) {
+            if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->remove($post);
+                $entityManager->flush();
+            }
         }
 
-        return $this->redirectToRoute('post_index');
+        return $this->render('common/error.html.twig', [
+            'error' => '401',
+            'message' => 'You have to be logged-in to access this ressource',
+        ]);
     }
 }
