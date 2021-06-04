@@ -9,7 +9,6 @@ use App\Form\PostType;
 use App\Repository\PostRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -143,7 +142,7 @@ class PostController extends AbstractController
      * @IsGranted("ROLE_USER", statusCode=401 ,message="You have to be logged-in to access this ressource")
      * @Route("/like/{id}", name="post_like")
      */
-    public function like(Post $post): JsonResponse
+    public function like(Post $post): Response
     {
         //* Si je n'ai pas encore liker alors je rajoute like sinon je l'enlève.
         //* Sachant que Like n'est pas une entité, il suffira de modifier l'array like[] du post pour ajouter l'utilisateur.
@@ -152,20 +151,16 @@ class PostController extends AbstractController
             $post->removeLike($this->getUser());
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->json([
-                'code' => 200,
-                'likes' => count($post->getLikes()),
-                'liked' => false,
+            return $this->redirectToRoute('post_show', [
+                'id' => $post->getId(),
             ]);
         }
 
         $post->addLike($this->getUser());
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->json([
-            'code' => 200,
-            'likes' => count($post->getLikes()),
-            'liked' => true,
+        return $this->redirectToRoute('post_show', [
+            'id' => $post->getId(),
         ]);
     }
 }
