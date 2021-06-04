@@ -14,7 +14,6 @@ class CommentFormType extends AbstractType
     {
         $builder
             ->add('content')
-            ->add('createdAt')
             ->add('add', SubmitType::class)
         ;
     }
