@@ -33,6 +33,26 @@
             </tr>
         </tbody>
     </table>
+    <div>Likes : <span class="badge bg-primary">{{post.likes|length}}</span></div>
+
+    {% set break = false %}
+    {% for like in post.likes %}
+        {% if not break %}
+            {% if post.likes|length == 1%}
+                {{like}} liked this post.
+            {% else %}
+                {{like}} and {{post.likes|length -1 }} liked this post.
+                {% set break = true %}
+            {% endif %}
+        {% endif %}
+    {% else %}
+        No one liked this post yet. Be the first one to like it !
+    {% endfor %}
+
+
+    <a href="{{path("post_like", {'id':post.id})}}">
+        <button class="btn btn-primary">Like this post</button>
+    </a>
 
     <a href="{{ path('post_index') }}" class="btn btn-primary">back to list</a>
     {% if app.user is same as( post.author) %}
@@ -42,7 +62,7 @@
     {% endif %}
 
     <div class="comments">
-        <h2>Comment section <span class="badge bg-secondary">{{post.comments|length}}</span></h2>
+        <h2>Comment section <span class="badge bg-success">{{post.comments|length}}</span></h2>
         {% for comment in comments %}
             <div class="comment-item">
                 <p>@{{comment.author}}</p>
